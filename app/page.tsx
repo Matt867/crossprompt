@@ -1,33 +1,30 @@
 'use client'
 
-import Crossword from '@jaredreisinger/react-crossword';
-import { Card, CardBody, CardHeader, Container, Flex, Grid, GridItem, Heading, Stack, Text } from '@chakra-ui/react'
+import { Button, Card, CardBody, CardHeader, Container, Flex, Grid, GridItem, Heading, Input, Stack, Text } from '@chakra-ui/react'
+import { useState } from 'react';
+import Guesses from './components/Guesses';
 
 export default function Home() {
-  const data = {
-    across: {
-      1: {
-        clue: 'one plus one',
-        answer: 'TWO',
-        row: 0,
-        col: 0,
-      },
-    },
-    down: {
-      2: {
-        clue: 'three minus two',
-        answer: 'ONE',
-        row: 0,
-        col: 2,
-      },
-    },
-  };
+  const [guessValue, setGuessValue] = useState<string>("");
+  const [guesses, setGuesses] = useState<string[]>([])
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGuessValue(e.target.value);
+  }
+  
+  const handleSubmit = () => {
+    if (guessValue === "") {
+      return;
+    }
+    setGuesses([...guesses, guessValue]);
+    setGuessValue("");
+  }
 
   return (
     <Container maxW="container.xl" pt={15}>
       <Card mb={15} variant={'outline'}>
         <CardHeader>
-          <Flex flexDirection={'column'}>
+          <Flex flexDirection={'column'} align={'center'}>
             <Heading size={'3xl'}>
               CrossPrompt
             </Heading>
@@ -35,18 +32,13 @@ export default function Home() {
           </Flex>
         </CardHeader>
       </Card>
-      <Flex flexDirection={'row'} wrap={'wrap'}>
-        <Container minW={'container.xs'} p={0} m={0}>
-          <Crossword data={data} />
+      <Card variant={'outline'} p={15}>
+        <Container size={'container.md'} p={0}>
+          <Guesses guesses={guesses}/>
+          <Input size={'lg'} placeholder='Enter your guess here' onChange={handleChange} value={guessValue} mb={15}/>
+          <Button size={'lg'} colorScheme={'green'} onClick={handleSubmit} minW={'100%'}>Submit</Button>
         </Container>
-        <Card variant={'outline'} minW={'container.xs'}>
-          <CardBody>
-            <Text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec lectus consequat, pellentesque ligula eu, eleifend eros. Fusce tristique ullamcorper augue, sed tempus sem tristique non. Aenean convallis mi nec ultrices consequat. Nulla malesuada leo nec tellus efficitur, eu interdum mauris euismod. Nam pharetra mi vitae tellus tempor, a finibus justo laoreet. Cras sed dolor magna. Maecenas in sapien ultrices, finibus orci id, dapibus justo.
-            </Text>
-          </CardBody>
-        </Card>
-      </Flex>
-    </Container>
+      </Card>
+      </Container>
   );
 }
